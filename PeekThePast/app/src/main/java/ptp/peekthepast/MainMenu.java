@@ -17,8 +17,7 @@ import android.view.MenuItem;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-    , Recorder.OnFragmentInteractionListener
-{
+        , Recorder.OnFragmentInteractionListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +83,22 @@ public class MainMenu extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-     //   FragmentManager fm = getFragmentManager();
+        //   FragmentManager fm = getFragmentManager();
 
 
         if (id == R.id.nav_explore) {
 
         } else if (id == R.id.nav_view) {
 
+
+            if (findViewById(R.id.fragment_container) != null) {
+                VideoList myFragment = VideoList.newInstance("","");
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, myFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         } else if (id == R.id.nav_create) {
 
             // Check that the activity is using the layout version with
@@ -105,14 +113,18 @@ public class MainMenu extends AppCompatActivity
                 }*/
 
                 // Create a new Fragment to be placed in the activity layout
-                Recorder myRecorder = new Recorder();
+                Recorder myRecorder = Recorder.newInstance("","");
 
                 // In case this activity was started with special instructions from an
                 // Intent, pass the Intent's extras to the fragment as arguments
                 //myRecorder.setArguments(getIntent().getExtras());
 
                 // Add the fragment to the 'fragment_container' FrameLayout
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, myRecorder).commit();
+                getFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container, myRecorder)
+                                    .addToBackStack(null)
+                                    .commit();
+
             }
 
 
@@ -120,6 +132,15 @@ public class MainMenu extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
 
+        } else if (id == R.id.nav_mariusu){
+            if (findViewById(R.id.fragment_container) != null) {
+                Mariusu myFragment = Mariusu.newInstance("", "");
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, myFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
