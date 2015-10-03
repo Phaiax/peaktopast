@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * A fragment with a Google +1 button.
  * Activities that contain this fragment must implement the
- * {@link Recorder.OnFragmentInteractionListener} interface
+ * {@link ptp.peekthepast.Recorder.OnRecordingFinishedListener} interface
  * to handle interaction events.
  * Use the {@link Recorder#newInstance} factory method to
  * create an instance of this fragment.
@@ -41,12 +41,13 @@ public class Recorder extends Fragment {
     private String mParam1;
     private String mParam2;
     private Camera mCamera;
+    private String filename;
 
     private CameraPreview mPreview;
     private MediaRecorder mMediaRecorder;
     private boolean isRecording = false;
 
-    private OnFragmentInteractionListener mListener;
+    private OnRecordingFinishedListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -157,6 +158,8 @@ public class Recorder extends Fragment {
             releaseMediaRecorder();
             releaseCamera();
             isRecording = false;
+            mListener.onRecordingFinished(filename);
+            return;
         } else {
             Log.e("ptp", "Error @ Stop Record");
         }
@@ -212,7 +215,7 @@ public class Recorder extends Fragment {
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
 
         // Step 4: Set output file
-        String filename = TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_VIDEO).toString();
+        filename = TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_VIDEO).toString();
         Log.e("ptp", "Filename: " + filename);
         mMediaRecorder.setOutputFile(filename);
 
@@ -248,7 +251,7 @@ public class Recorder extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnRecordingFinishedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -311,9 +314,9 @@ public class Recorder extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnRecordingFinishedListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onRecordingFinished(String videoFile);
     }
 
 }

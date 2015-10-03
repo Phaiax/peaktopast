@@ -19,10 +19,13 @@ import android.view.WindowManager;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , Recorder.OnFragmentInteractionListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener {
+        , Recorder.OnRecordingFinishedListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener, NewVideoForm.OnVideodataEnteredListener {
 
 
     public static String PACKAGE_NAME;
+
+    public String lastVideoFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,6 +243,24 @@ public class MainMenu extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onRecordingFinished(String videoFile) {
+        this.lastVideoFile = videoFile;
+
+        NewVideoForm myFragment = NewVideoForm.newInstance(lastVideoFile);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, myFragment)
+                .addToBackStack(null)
+                .commit();
+
+    }
+
+    @Override
+    public void onVideodataEntered(String title, float lat, float lng) {
 
     }
 }
