@@ -134,7 +134,7 @@ public class MainMenu extends AppCompatActivity
 
         } else if (id == R.id.nav_mariusu){
             if (findViewById(R.id.fragment_container) != null) {
-                Mariusu myFragment = Mariusu.newInstance("", "");
+                Mariusu myFragment = Mariusu.newInstance(this , "", "");
 
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, myFragment)
