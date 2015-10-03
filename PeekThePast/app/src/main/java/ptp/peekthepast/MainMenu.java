@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -56,10 +57,23 @@ public class MainMenu extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else
+        {
+            if (findViewById(R.id.fragment_container) != null) {
+                VideoList myFragment = VideoList.newInstance("","");
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, myFragment)
+                        .addToBackStack(null)
+                        .commit();
+                getSupportActionBar().show();
+            }
         }
+       /* else{
+            super.onBackPressed();
+        }*/
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,8 +106,35 @@ public class MainMenu extends AppCompatActivity
                     .replace(R.id.fragment_container, myFragment)
                     .addToBackStack(null)
                     .commit();
+            //hideTitle();
+            getSupportActionBar().hide();
+
         }
     }
+
+
+    // Hide Status Bar
+    public void hideTitle() {
+        try {
+            ((View) findViewById(android.R.id.title).getParent())
+                    .setVisibility(View.GONE);
+        } catch (Exception e) {
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+    }
+    public void showTitle() {
+        try {
+            ((View) findViewById(android.R.id.title).getParent())
+                    .setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+        }
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
 
     public void openVideoList()
     {
@@ -163,16 +204,8 @@ public class MainMenu extends AppCompatActivity
 
         } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_mariusu){
-            if (findViewById(R.id.fragment_container) != null) {
-                Mariusu myFragment = Mariusu.newInstance(this , "", "");
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, myFragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -189,7 +222,7 @@ public class MainMenu extends AppCompatActivity
         int welchesElement = (int)view.getTag();
         // find fitting element of element list.
         VideoList fragment = (VideoList) getFragmentManager().findFragmentById(R.id.fragment_container);
-        fragment.vote(welchesElement,false);
+        fragment.vote(welchesElement, false);
 
     }
     public void b_upvote_click(View view)
@@ -198,6 +231,12 @@ public class MainMenu extends AppCompatActivity
         VideoList fragment = (VideoList) getFragmentManager().findFragmentById(R.id.fragment_container);
         fragment.vote(welchesElement,true);
     }
+
+    public void vidiview(View view)
+    {
+        getSupportActionBar().hide();
+    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {

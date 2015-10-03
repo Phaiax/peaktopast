@@ -10,6 +10,15 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal|top"
         android:focusable="false"
-        android:nestedScrollingEnabled="false" />
+        android:nestedScrollingEnabled="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:onClick="vidiview"
+        />
+
 
 </FrameLayout>
+
+

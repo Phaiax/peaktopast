@@ -1,5 +1,6 @@
 package ptp.peekthepast;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -7,6 +8,9 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -67,7 +71,9 @@ public class Mariusu extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
+
 
     }
 
@@ -107,7 +113,7 @@ public class Mariusu extends Fragment {
 
         //"autostart"
         vidView.start();
-
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
 
 
         //console output
@@ -128,13 +134,15 @@ public class Mariusu extends Fragment {
         vidView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         public void onCompletion(MediaPlayer mp)
         {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
             VideoList frag = VideoList.newInstance("","");
-
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_container, frag);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.addToBackStack(null);
             ft.commit();
+
+
         }
         });
         Log.e("ptp", "play!");
