@@ -23,21 +23,14 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-<<<<<<< HEAD
-    compile 'com.google.maps.android:android-maps-utils:0.4+'
-=======
->>>>>>> c4d9a97100adc80a2212e10843139c4cb39e5805
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.android.support:support-v4:23.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
-<<<<<<< HEAD
     compile 'com.google.code.gson:gson:2.2.4'
-=======
     compile 'com.google.android.gms:play-services-ads:8.1.0'
     compile 'com.google.android.gms:play-services-identity:8.1.0'
     compile 'com.google.android.gms:play-services-gcm:8.1.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
->>>>>>> c4d9a97100adc80a2212e10843139c4cb39e5805
 }
