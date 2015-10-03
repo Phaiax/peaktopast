@@ -66,6 +66,37 @@ public class VideoList extends Fragment {
         // Required empty public constructor
     }
 
+
+    public void vote(int id,boolean up)
+    {
+        ContentClassForListAdapterAndVideoList aStruct;
+        // search fitting.
+        for(int i = 0; i < myList.size(); i++) {
+           aStruct =  myList.get(i);
+            if(aStruct.id_of_video == id)
+            {
+                if(up)
+                {
+                    aStruct.points++;
+                    myList.set(i,aStruct);
+                    i=10000;
+                }
+                else
+                {
+                    aStruct.points--;
+                    myList.set(i,aStruct);
+                    i=10000;
+                }
+            }
+        }
+
+        // get data from the table by the ListAdapter
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
+        yourListView.setAdapter(customAdapter);
+
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +109,9 @@ public class VideoList extends Fragment {
 
 
     }
+
+    public ListView yourListView;
+    public ArrayList<ContentClassForListAdapterAndVideoList> myList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,7 +147,7 @@ public class VideoList extends Fragment {
       //
       // yourListView .setAdapter(customAdapter);
 
-        ListView yourListView = (ListView) view.findViewById(R.id.theListView);
+        yourListView = (ListView) view.findViewById(R.id.theListView);
 
 // get data from the table by the ListAdapter
         ContentClassForListAdapterAndVideoList aListItem = new ContentClassForListAdapterAndVideoList();
@@ -125,12 +159,13 @@ public class VideoList extends Fragment {
         Drawable res = getResources().getDrawable(imageResource);
         aListItem.thumbnail = res;
         aListItem.timeAndDate = "1.1.1992 14:33";
-        ArrayList<ContentClassForListAdapterAndVideoList> myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
+        myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
         for(int i =0 ; i < 20; i++) {
             myList.add(aListItem);
         }
         ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
         yourListView.setAdapter(customAdapter);
+
 
         //-----------------
         // End dymn ele crea

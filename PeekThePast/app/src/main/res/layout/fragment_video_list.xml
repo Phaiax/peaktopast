@@ -46,7 +46,8 @@
                 android:entries="@array/sorting_arrays"
             android:spinnerMode="dropdown"
                 android:gravity="left|start"
-                android:layout_gravity="center_vertical">
+                android:layout_gravity="center_vertical"
+                android:backgroundTint="#46ffffff">
             </Spinner>
 
             <LinearLayout
@@ -62,7 +63,10 @@
             android:id="@+id/theListView"
             android:orientation="vertical"
             android:layout_width="match_parent"
+            android:dividerHeight="0sp"
+            android:divider="@null"
             android:layout_height="match_parent">
+
 
         </ListView>
 

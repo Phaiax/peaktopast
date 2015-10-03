@@ -6,8 +6,19 @@
     <VideoView
         android:id="@+id/myVideo"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="center_horizontal|top"
+        android:focusable="false"
+        android:nestedScrollingEnabled="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:onClick="vidiview"
+        />
+
 
 </FrameLayout>
+
+

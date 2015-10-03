@@ -1,10 +1,13 @@
 package ptp.peekthepast;
 
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,13 +17,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
-        , Recorder.OnFragmentInteractionListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener {
+        , Recorder.OnRecordingFinishedListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener, NewVideoForm.OnVideodataEnteredListener {
 
 
     public static String PACKAGE_NAME;
+
+    public String lastVideoFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +62,23 @@ public class MainMenu extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else
+        {
+            if (findViewById(R.id.fragment_container) != null) {
+                VideoList myFragment = VideoList.newInstance("","");
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, myFragment)
+                        .addToBackStack(null)
+                        .commit();
+                getSupportActionBar().show();
+            }
         }
+       /* else{
+            super.onBackPressed();
+        }*/
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,6 +111,45 @@ public class MainMenu extends AppCompatActivity
                     .replace(R.id.fragment_container, myFragment)
                     .addToBackStack(null)
                     .commit();
+            //hideTitle();
+            getSupportActionBar().hide();
+
+        }
+    }
+
+
+    // Hide Status Bar
+    public void hideTitle() {
+        try {
+            ((View) findViewById(android.R.id.title).getParent())
+                    .setVisibility(View.GONE);
+        } catch (Exception e) {
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+    }
+    public void showTitle() {
+        try {
+            ((View) findViewById(android.R.id.title).getParent())
+                    .setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+        }
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+
+    public void openVideoList()
+    {
+        if (findViewById(R.id.fragment_container) != null) {
+            VideoList myFragment = VideoList.newInstance("","");
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, myFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -104,6 +163,8 @@ public class MainMenu extends AppCompatActivity
 
 
         if (id == R.id.nav_explore) {
+
+            startActivity(new Intent(this, ExploreWorld.class));
 
 
         } else if (id == R.id.nav_view) {
@@ -147,19 +208,12 @@ public class MainMenu extends AppCompatActivity
 
 
         } else if (id == R.id.nav_share) {
-
+            // kann wieder weg, nur zum schnellen Zugriff
+            UploadVideo U = new UploadVideo("wef", "#Title", 211.4f, 8.4f);
         } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_mariusu){
-            if (findViewById(R.id.fragment_container) != null) {
-                Mariusu myFragment = Mariusu.newInstance(this , "", "");
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, myFragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -174,14 +228,44 @@ public class MainMenu extends AppCompatActivity
     public void b_downvote_click(View view)
     {
         int welchesElement = (int)view.getTag();
+        // find fitting element of element list.
+        VideoList fragment = (VideoList) getFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.vote(welchesElement, false);
+
     }
     public void b_upvote_click(View view)
     {
         int welchesElement = (int)view.getTag();
+        VideoList fragment = (VideoList) getFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.vote(welchesElement,true);
     }
+
+    public void vidiview(View view)
+    {
+        getSupportActionBar().hide();
+    }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onRecordingFinished(String videoFile) {
+        this.lastVideoFile = videoFile;
+
+        NewVideoForm myFragment = NewVideoForm.newInstance(lastVideoFile);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, myFragment)
+                .addToBackStack(null)
+                .commit();
+
+    }
+
+    @Override
+    public void onVideodataEntered(String title, float lat, float lng) {
+        UploadVideo U = new UploadVideo(lastVideoFile, title, lat, lng);
     }
 }
