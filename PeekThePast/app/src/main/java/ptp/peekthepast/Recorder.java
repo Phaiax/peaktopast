@@ -1,15 +1,26 @@
 package ptp.peekthepast;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
-
-import com.google.android.gms.plus.PlusOneButton;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * A fragment with a Google +1 button.
@@ -29,7 +40,11 @@ public class Recorder extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Camera mCamera;
 
+    private CameraPreview mPreview;
+    private MediaRecorder mMediaRecorder;
+    private boolean isRecording = false;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,6 +77,8 @@ public class Recorder extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -70,7 +87,40 @@ public class Recorder extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_recorder, container, false);
 
-        //Find the +1 button
+        // Add a listener to the Capture button
+        Button captureButton = (Button) view.findViewById(R.id.button_record);
+        captureButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        if(!isRecording) {
+                            record();
+                        } else {
+                            stopRecording();
+                        }
+                    }
+                }
+        );
+
+        Button stopButton = (Button) view.findViewById(R.id.button_stop);
+
+        stopButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        // mCamera.takePicture(null, null, mPicture);
+                    }
+                }
+        );
+
+        mCamera = getCameraInstance();
+
+        // Create our Preview view and set it as the content of our activity.
+        mPreview = new CameraPreview(getActivity(), mCamera);
+        FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
 
 
         return view;
@@ -84,11 +134,98 @@ public class Recorder extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+
+            File pictureFile = TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_IMAGE);
+            if (pictureFile == null){
+                Log.d("ptp", "Error creating media file, check storage permissions: ");
+                return;
+            }
+
+            try {
+                FileOutputStream fos = new FileOutputStream(pictureFile);
+                fos.write(data);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                Log.d("ptp", "File not found: " + e.getMessage());
+            } catch (IOException e) {
+                Log.d("ptp", "Error accessing file: " + e.getMessage());
+            }
         }
+    };
+
+
+    private void record() {
+        if(prepareRecording()) {
+            mMediaRecorder.start();
+            isRecording = true;
+        }
+    }
+
+    private void stopRecording() {
+        if(isRecording) {
+            mMediaRecorder.stop();
+            mCamera.lock();
+            mCamera.stopPreview();
+            releaseMediaRecorder();
+            isRecording = false;
+        }
+    }
+
+    private void releaseMediaRecorder(){
+        if (mMediaRecorder != null) {
+            mMediaRecorder.reset();   // clear recorder configuration
+            mMediaRecorder.release(); // release the recorder object
+            mMediaRecorder = null;
+            mCamera.lock();           // lock camera for later use
+        }
+    }
+
+    private void releaseCamera(){
+        if (mCamera != null){
+            mCamera.release();        // release the camera for other applications
+            mCamera = null;
+        }
+    }
+
+
+    private boolean prepareRecording() {
+        mMediaRecorder = new MediaRecorder();
+
+        // Step 1: Unlock and set camera to MediaRecorder
+        mCamera.unlock();
+        mMediaRecorder.setCamera(mCamera);
+
+        // Step 2: Set sources
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+
+        // Step 4: Set output file
+        mMediaRecorder.setOutputFile(TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_VIDEO).toString());
+
+        // Step 5: Set the preview output
+        mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
+
+        // Step 6: Prepare configured MediaRecorder
+        try {
+            mMediaRecorder.prepare();
+        } catch (IllegalStateException e) {
+            Log.d("ptp", "IllegalStateException preparing MediaRecorder: " + e.getMessage());
+            releaseMediaRecorder();
+            return false;
+        } catch (IOException e) {
+            Log.d("ptp", "IOException preparing MediaRecorder: " + e.getMessage());
+            releaseMediaRecorder();
+            return false;
+        }
+        return true;
+
     }
 
     @Override
@@ -109,6 +246,28 @@ public class Recorder extends Fragment {
     }
 
 
+    /** Check if this device has a camera */
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
+    /** A safe way to get an instance of the Camera object. */
+    public static Camera getCameraInstance(){
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
 
     /**
      * This interface must be implemented by activities that contain this
