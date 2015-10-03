@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,6 +44,11 @@ public class ListAdapterForVideoList extends ArrayAdapter<ContentClassForListAda
             TextView timeAndDate = (TextView) v.findViewById(R.id.textViewTimeAndDate);
             TextView textViewScore = (TextView) v.findViewById(R.id.textViewScore);
             TextView textViewDescribtion = (TextView) v.findViewById(R.id.textViewDescribtion1);
+            Button upv = (Button) v.findViewById(R.id.buttonUpvote);
+            Button dwv = (Button) v.findViewById(R.id.buttonDownvote);
+
+            upv.setTag(p.id_of_video);
+            dwv.setTag(p.id_of_video);
 
             if (timeAndDate != null) {
                 timeAndDate.setText(p.timeAndDate);
@@ -57,6 +63,7 @@ public class ListAdapterForVideoList extends ArrayAdapter<ContentClassForListAda
             }
             if (textViewDescribtion != null) {
                 textViewDescribtion.setText(p.description);
+
             }
             if (thumbn != null) {
                 thumbn.setImageDrawable(p.thumbnail);

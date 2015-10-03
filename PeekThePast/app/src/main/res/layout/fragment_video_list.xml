@@ -62,7 +62,10 @@
             android:id="@+id/theListView"
             android:orientation="vertical"
             android:layout_width="match_parent"
+            android:dividerHeight="0sp"
+            android:divider="@null"
             android:layout_height="match_parent">
+
 
         </ListView>
 

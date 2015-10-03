@@ -1,6 +1,7 @@
 package ptp.peekthepast;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -94,6 +95,18 @@ public class MainMenu extends AppCompatActivity
         }
     }
 
+    public void openVideoList()
+    {
+        if (findViewById(R.id.fragment_container) != null) {
+            VideoList myFragment = VideoList.newInstance("","");
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, myFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -174,10 +187,16 @@ public class MainMenu extends AppCompatActivity
     public void b_downvote_click(View view)
     {
         int welchesElement = (int)view.getTag();
+        // find fitting element of element list.
+        VideoList fragment = (VideoList) getFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.vote(welchesElement,false);
+
     }
     public void b_upvote_click(View view)
     {
         int welchesElement = (int)view.getTag();
+        VideoList fragment = (VideoList) getFragmentManager().findFragmentById(R.id.fragment_container);
+        fragment.vote(welchesElement,true);
     }
 
     @Override

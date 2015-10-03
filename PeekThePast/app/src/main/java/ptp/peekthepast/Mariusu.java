@@ -2,12 +2,14 @@ package ptp.peekthepast;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.MediaController;
@@ -81,19 +83,20 @@ public class Mariusu extends Fragment {
         VideoView vidView = (VideoView) view.findViewById(R.id.myVideo);
 
         //set url -> from database
-        String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-90c93a5d-1500-80c4-5eef-f1e56973305c/ksnn_compilation_master_the_internet_512kb.mp4?sv=2012-02-12&sr=c&si=8b4b4d83-f7d1-4714-8ca3-8f20295dd2ec&sig=I8BN5FNzpVt7f0ECj7oA2Rx3D0vl2O4NChXoCCjshUQ%3D&st=2015-10-03T02%3A04%3A37Z&se=2115-09-09T02%3A04%3A37Z";
+        String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-dac53a5d-1500-80c4-4659-f1e569de97e7/video.mp4";
         Uri vidUri = Uri.parse(vidAddress);
 
         //load video => TODO as a second task / async
         vidView.setVideoURI(vidUri);
 
-        //add mediacontroller
+        //add mediacontroller --> die kontrolleinheit unten
         MediaController vidControl = new MediaController(getActivity());
         vidControl.setAnchorView(vidView);
         vidView.setMediaController(vidControl);
 
         //"autostart"
         vidView.start();
+
 
 
         //console output
@@ -110,6 +113,18 @@ public class Mariusu extends Fragment {
                 Log.e("ptp", "Error: " + String.valueOf(what) + "  " + String.valueOf(extra));
                 return false;
             }
+        });
+        vidView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        public void onCompletion(MediaPlayer mp)
+        {
+            VideoList frag = VideoList.newInstance("","");
+
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, frag);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
         });
         Log.e("ptp", "play!");
 
