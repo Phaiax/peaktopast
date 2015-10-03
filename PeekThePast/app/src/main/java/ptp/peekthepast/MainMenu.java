@@ -163,7 +163,8 @@ public class MainMenu extends AppCompatActivity
 
 
         } else if (id == R.id.nav_share) {
-
+            // kann wieder weg, nur zum schnellen Zugriff
+            UploadVideo U = new UploadVideo("wef", "#Title", 211.4f, 8.4f);
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_mariusu){
@@ -222,6 +223,6 @@ public class MainMenu extends AppCompatActivity
 
     @Override
     public void onVideodataEntered(String title, float lat, float lng) {
-
+        UploadVideo U = new UploadVideo(lastVideoFile, title, lat, lng);
     }
 }
