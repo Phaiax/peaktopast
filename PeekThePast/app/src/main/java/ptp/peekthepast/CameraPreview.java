@@ -34,6 +34,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
             mCamera.setPreviewDisplay(holder);
+            Camera.CameraInfo ci = new Camera.CameraInfo();
+            mCamera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, ci);
+            Log.e("ptp", "Do: " + String.valueOf(ci.orientation));
+            mCamera.setDisplayOrientation(90);
+            Log.e("ptp", "Do: " + String.valueOf(ci.orientation));
             mCamera.startPreview();
         } catch (IOException e) {
             Log.d("ptp", "Error setting camera preview: " + e.getMessage());

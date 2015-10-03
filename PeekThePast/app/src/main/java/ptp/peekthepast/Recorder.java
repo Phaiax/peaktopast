@@ -123,6 +123,7 @@ public class Recorder extends Fragment {
         if(mCamera == null) {
             Log.e("ptp", "Create Camera instance");
             mCamera = getCameraInstance(getActivity());
+            configureCamera();
         }
         if(mCamera != null) {
             // Create our Preview view and set it as the content of our activity.
@@ -173,6 +174,7 @@ public class Recorder extends Fragment {
 
     private void releaseCamera(){
         if (mCamera != null){
+            mCamera.stopPreview();
             mPreview.releaseCamera();
             mPreview = null;
             FrameLayout preview = (FrameLayout) getView().findViewById(R.id.camera_preview);
@@ -233,6 +235,14 @@ public class Recorder extends Fragment {
 
     }
 
+    private void configureCamera() {
+        // get Camera parameters
+        Camera.Parameters params = mCamera.getParameters();
+        // set the focus mode
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        // set Camera parameters
+        mCamera.setParameters(params);
+    }
 
     @Override
     public void onAttach(Activity activity) {
