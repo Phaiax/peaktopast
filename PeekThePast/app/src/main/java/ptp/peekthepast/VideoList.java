@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -32,7 +33,7 @@ import java.util.List;
  */
 
 
-public class VideoList extends Fragment {
+public class VideoList extends Fragment implements HttpRequest.HttpRequestListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -147,24 +148,16 @@ public class VideoList extends Fragment {
       //
       // yourListView .setAdapter(customAdapter);
 
-        yourListView = (ListView) view.findViewById(R.id.theListView);
 
-// get data from the table by the ListAdapter
-        ContentClassForListAdapterAndVideoList aListItem = new ContentClassForListAdapterAndVideoList();
-        aListItem.description= "wfewefweff";
-        aListItem.id_of_video= 123;
-        aListItem.points = 214;
-        String uri = "drawable/test_image";
-        int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
-        Drawable res = getResources().getDrawable(imageResource);
-        aListItem.thumbnail = res;
-        aListItem.timeAndDate = "1.1.1992 14:33";
-        myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
-        for(int i =0 ; i < 20; i++) {
-            myList.add(aListItem);
-        }
-        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
-        yourListView.setAdapter(customAdapter);
+        HttpRequest req = new HttpRequest(this);
+        req.getMoments(1,2,3); // TODO Zahlen iwann umändern wenn implementiert
+
+
+        //------------------------------Bestücken
+
+
+
+        //-------------End Bestücken
 
 
         //-----------------
@@ -206,6 +199,42 @@ public class VideoList extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void momentsAvailable(ArrayList<oneMoment> Moments) {
+        yourListView = (ListView) getActivity().findViewById(R.id.theListView);
+
+        // get data from the table by the ListAdapter
+        ContentClassForListAdapterAndVideoList aListItem;
+        myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
+
+        for(int i=0; i < Moments.size(); i++) {
+            aListItem = new ContentClassForListAdapterAndVideoList();
+            aListItem.description = Moments.get(i).name;
+            aListItem.id_of_video = Moments.get(i).id;
+            aListItem.points = Moments.get(i).ranking;
+            aListItem.url_to_video = Uri.parse(Moments.get(i).url);
+            aListItem.url_toThumbnail = Uri.parse(Moments.get(i).thumb);
+            aListItem.lat = Moments.get(i).lat;
+            aListItem.lng = Moments.get(i).lng;
+
+            //---Image -- NOCH DEBUG!
+            int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
+            Drawable res = getResources().getDrawable(imageResource);
+            aListItem.thumbnail = res;
+            aListItem.timeAndDate = Moments.get(i).added;
+            String uri = "drawable/test_image";
+            //---/Image
+
+            myList.add(aListItem);
+        }
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
+        yourListView.setAdapter(customAdapter);
+    }
+
+    @Override
+    public void failure(int nummer) {
+
+    }
 
 
     /**
