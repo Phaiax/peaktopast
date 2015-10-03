@@ -1,15 +1,22 @@
 package ptp.peekthepast;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by daniel on 03.10.15.
@@ -60,9 +67,28 @@ public class UploadVideo {
         }
     }
 
+    private String enc(String unsafe) {
+        return URLEncoder.encode(unsafe);
+    }
+
+    private String maxlen(String longer, int maxlen) {
+        if (longer.length() > maxlen) {
+            return  longer.substring(0, maxlen);
+        }
+        return longer;
+    }
 
     private void sendVideoMetainfos() {
-        Log.e("ptp", getOutputFromUrl("http://ptpbackend.cloudapp.net/list"));
+        Log.e("ptp", getOutputFromUrl("http://ptpbackend.cloudapp.net/list", null, GET));
+
+        HashMap<String, String> kv = new HashMap<>();
+        kv.put("lng", String.valueOf(lng));
+        kv.put("lat", String.valueOf(lat));
+        kv.put("name", enc(maxlen(title, 140)));
+
+        Log.e("ptp", getOutputFromUrl("http://ptpbackend.cloudapp.net/newvideo", kv, POST));
+
+
     }
 
     private  void  sendVideoFile() {
@@ -73,10 +99,13 @@ public class UploadVideo {
 
     }
 
-    private String getOutputFromUrl(String url) {
+    static final int POST = 0;
+    static final int GET = 1;
+
+    private String getOutputFromUrl(String url, HashMap<String, String> kv, int type) {
         StringBuffer output = new StringBuffer("");
         try {
-            InputStream stream = getHttpConnection(url);
+            InputStream stream = getHttpConnection(url, kv, type);
             if ( stream != null) {
                 BufferedReader buffer = new BufferedReader(
                         new InputStreamReader(stream));
@@ -91,15 +120,39 @@ public class UploadVideo {
     }
 
     // Makes HttpURLConnection and returns InputStream
-    private InputStream getHttpConnection(String urlString)
+    private InputStream getHttpConnection(String urlString, HashMap<String, String> kv, int type)
             throws IOException {
         InputStream stream = null;
+
+        Uri.Builder builder = new Uri.Builder();
+        if ( kv != null) {
+            for(Map.Entry<String, String> entry : kv.entrySet()) {
+                builder.appendQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        String query = builder.build().getEncodedQuery();
+
         URL url = new URL(urlString);
         URLConnection connection = url.openConnection();
 
         try {
             HttpURLConnection httpConnection = (HttpURLConnection) connection;
-            httpConnection.setRequestMethod("GET");
+            httpConnection.setReadTimeout(10000);
+            httpConnection.setConnectTimeout(15000);
+            httpConnection.setDoInput(true);
+            httpConnection.setDoOutput(true);
+            if(type == POST) {
+                httpConnection.setRequestMethod("POST");
+                OutputStream os = httpConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+                writer.write(query);
+                writer.flush();
+                writer.close();
+                os.close();
+            } else {
+                httpConnection.setRequestMethod("GET");
+            }
             httpConnection.connect();
 
             int RC = httpConnection.getResponseCode();
