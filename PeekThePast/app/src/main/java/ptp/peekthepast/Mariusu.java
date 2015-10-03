@@ -1,13 +1,19 @@
 package ptp.peekthepast;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
+//Mariusu imports
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +34,7 @@ public class Mariusu extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private Context context = null; //TODO MAKE SETTER
 
     /**
      * Use this factory method to create a new instance of
@@ -38,8 +45,9 @@ public class Mariusu extends Fragment {
      * @return A new instance of fragment Mariusu.
      */
     // TODO: Rename and change types and number of parameters
-    public static Mariusu newInstance(String param1, String param2) {
+    public static Mariusu newInstance(Context context, String param1, String param2) {
         Mariusu fragment = new Mariusu();
+        fragment.setContext(context);
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -58,12 +66,36 @@ public class Mariusu extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        //mariusu
+        View view = inflater.inflate(R.layout.fragment_mariusu, container, false);
+
+        //getActivity().setContentView(R.layout.fragment_mariusu);
+        VideoView vidView = (VideoView) view.findViewById(R.id.myVideo);
+        vidView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.e("ptp","Video Error: What " + String.valueOf(what) + " extra " + String.valueOf(extra));
+                return false;
+            }
+        });
+        vidView.requestFocus();
+        String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-32e43a5d-1500-80c4-fc2d-f1e569472f98/VID_20151002_224316.mp4?sv=2012-02-12&sr=c&si=841d0614-5a52-4d19-87db-d69c6bbdfbfc&sig=TDj3Y8QOI%2FLa7LFDerJ7sUp2zmnR%2Bt4iyCHSaBp1eqc%3D&st=2015-10-02T21%3A05%3A13Z&se=2115-09-08T21%3A05%3A13Z";
+        vidAddress = "https://archive.org/download/ksnn_compilation_master_the_internet/ksnn_compilation_master_the_internet_512kb.mp4";
+        Uri vidUri = Uri.parse(vidAddress);
+        vidView.setVideoURI(vidUri);
+        MediaController vidControl = new MediaController(getActivity());
+        vidControl.setAnchorView(vidView);
+        vidView.setMediaController(vidControl);
+        //vidView.start();
+
         return inflater.inflate(R.layout.fragment_mariusu, container, false);
     }
 
@@ -89,6 +121,10 @@ public class Mariusu extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void setContext(Context c) {
+        this.context = c;
     }
 
     /**
