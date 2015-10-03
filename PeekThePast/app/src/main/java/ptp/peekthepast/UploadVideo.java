@@ -77,11 +77,13 @@ public class UploadVideo {
         StringBuffer output = new StringBuffer("");
         try {
             InputStream stream = getHttpConnection(url);
-            BufferedReader buffer = new BufferedReader(
-                    new InputStreamReader(stream));
-            String s = "";
-            while ((s = buffer.readLine()) != null)
-                output.append(s);
+            if ( stream != null) {
+                BufferedReader buffer = new BufferedReader(
+                        new InputStreamReader(stream));
+                String s = "";
+                while ((s = buffer.readLine()) != null)
+                    output.append(s);
+            }
         } catch (IOException e1) {
             e1.printStackTrace();
         }
