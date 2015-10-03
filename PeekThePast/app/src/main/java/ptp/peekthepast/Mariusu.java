@@ -112,7 +112,7 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
 
 
 
-    public void momentsAvailable(Collection<oneMoment> Moments) {
+    public void momentsAvailable(ArrayList<oneMoment> Moments) {
         int a=0;
     }
     public void failure(int nummer) {}
@@ -141,7 +141,6 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
 
         HttpRequest test = new HttpRequest(this);
                 test.getMoments(1, 1, (float)0.1);
-
 
 
 
@@ -186,18 +185,17 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
             }
         });
         vidView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-        public void onCompletion(MediaPlayer mp)
-        {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-            VideoList frag = VideoList.newInstance("","");
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, frag);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.addToBackStack(null);
-            ft.commit();
+            public void onCompletion(MediaPlayer mp) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                VideoList frag = VideoList.newInstance("", "");
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment_container, frag);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack(null);
+                ft.commit();
 
 
-        }
+            }
         });
         Log.e("ptp", "play!");
 

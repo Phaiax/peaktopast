@@ -17,9 +17,9 @@ public class jsonparser {
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public  Collection parse(String json) {
+    public  ArrayList<oneMoment> parse(String json) {
         Gson gson = new Gson();
-        Collection collection = new ArrayList();
+        ArrayList<oneMoment> collection = new ArrayList();
         JsonParser parser = new JsonParser();
         if(json!="") {
             JsonArray array = parser.parse(json).getAsJsonArray();
