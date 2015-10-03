@@ -60,7 +60,9 @@ public class ListAdapterForVideoList extends ArrayAdapter<ContentClassForListAda
             }
             if (thumbn != null) {
                 thumbn.setImageDrawable(p.thumbnail);
+                thumbn.setTag(p.id_of_video);
             }
+
 
         }
 

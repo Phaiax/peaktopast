@@ -82,6 +82,18 @@ public class MainMenu extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void openAmoment(int momentid)
+    {
+        if (findViewById(R.id.fragment_container) != null) {
+            Mariusu myFragment = Mariusu.newInstance(this , "", "");
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, myFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -92,6 +104,7 @@ public class MainMenu extends AppCompatActivity
 
 
         if (id == R.id.nav_explore) {
+
 
         } else if (id == R.id.nav_view) {
 
@@ -151,6 +164,20 @@ public class MainMenu extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void b_onImageViewClick(View view)
+    {
+        int welchesElement = (int)view.getTag();
+        openAmoment(welchesElement);
+    }
+    public void b_downvote_click(View view)
+    {
+        int welchesElement = (int)view.getTag();
+    }
+    public void b_upvote_click(View view)
+    {
+        int welchesElement = (int)view.getTag();
     }
 
     @Override

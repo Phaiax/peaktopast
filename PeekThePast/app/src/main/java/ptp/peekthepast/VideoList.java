@@ -140,6 +140,13 @@ public class VideoList extends Fragment {
 
     }
 
+    public void b_upvote(View view)
+    {
+        view.getId();
+
+    }
+
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
