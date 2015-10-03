@@ -46,7 +46,8 @@
                 android:entries="@array/sorting_arrays"
             android:spinnerMode="dropdown"
                 android:gravity="left|start"
-                android:layout_gravity="center_vertical">
+                android:layout_gravity="center_vertical"
+                android:backgroundTint="#46ffffff">
             </Spinner>
 
             <LinearLayout
