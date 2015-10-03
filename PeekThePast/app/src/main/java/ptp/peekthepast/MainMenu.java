@@ -2,10 +2,12 @@ package ptp.peekthepast;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -161,6 +163,8 @@ public class MainMenu extends AppCompatActivity
 
 
         if (id == R.id.nav_explore) {
+
+            startActivity(new Intent(this, ExploreWorld.class));
 
 
         } else if (id == R.id.nav_view) {

@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +20,35 @@ import android.view.ViewGroup;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 //Mariusu imports
 
 /**
@@ -29,7 +59,7 @@ import android.widget.VideoView;
  * Use the {@link Mariusu#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Mariusu extends Fragment {
+public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -82,10 +112,10 @@ public class Mariusu extends Fragment {
 
 
 
-
-
-
-
+    public void momentsAvailable(Collection<oneMoment> Moments) {
+        int a=0;
+    }
+    public void failure(int nummer) {}
 
 
     @Override
@@ -102,6 +132,30 @@ public class Mariusu extends Fragment {
         //set url -> from database
         String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-dac53a5d-1500-80c4-4659-f1e569de97e7/video.mp4";
         Uri vidUri = Uri.parse(vidAddress);
+
+
+
+
+
+
+
+        HttpRequest test = new HttpRequest(this);
+                test.getMoments(1, 1, (float)0.1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //load video => TODO as a second task / async
         vidView.setVideoURI(vidUri);
@@ -149,6 +203,8 @@ public class Mariusu extends Fragment {
 
         return view;//inflater.inflate(R.layout.fragment_mariusu, container, false);
     }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
