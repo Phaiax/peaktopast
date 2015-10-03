@@ -19,6 +19,9 @@ public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , Recorder.OnFragmentInteractionListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener {
 
+
+    public static String PACKAGE_NAME;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,8 @@ public class MainMenu extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+
     }
 
     @Override
