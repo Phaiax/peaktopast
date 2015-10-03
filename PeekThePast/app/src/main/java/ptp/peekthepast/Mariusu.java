@@ -75,28 +75,45 @@ public class Mariusu extends Fragment {
         // Inflate the layout for this fragment
 
         //mariusu
-        View view = inflater.inflate(R.layout.fragment_mariusu, container, false);
 
-        //getActivity().setContentView(R.layout.fragment_mariusu);
+        //initialise video view
+        View view = inflater.inflate(R.layout.fragment_mariusu, container, false);
         VideoView vidView = (VideoView) view.findViewById(R.id.myVideo);
-        vidView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                Log.e("ptp","Video Error: What " + String.valueOf(what) + " extra " + String.valueOf(extra));
-                return false;
-            }
-        });
-        vidView.requestFocus();
-        String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-32e43a5d-1500-80c4-fc2d-f1e569472f98/VID_20151002_224316.mp4?sv=2012-02-12&sr=c&si=841d0614-5a52-4d19-87db-d69c6bbdfbfc&sig=TDj3Y8QOI%2FLa7LFDerJ7sUp2zmnR%2Bt4iyCHSaBp1eqc%3D&st=2015-10-02T21%3A05%3A13Z&se=2115-09-08T21%3A05%3A13Z";
-        vidAddress = "https://archive.org/download/ksnn_compilation_master_the_internet/ksnn_compilation_master_the_internet_512kb.mp4";
+
+        //set url -> from database
+        String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-90c93a5d-1500-80c4-5eef-f1e56973305c/ksnn_compilation_master_the_internet_512kb.mp4?sv=2012-02-12&sr=c&si=8b4b4d83-f7d1-4714-8ca3-8f20295dd2ec&sig=I8BN5FNzpVt7f0ECj7oA2Rx3D0vl2O4NChXoCCjshUQ%3D&st=2015-10-03T02%3A04%3A37Z&se=2115-09-09T02%3A04%3A37Z";
         Uri vidUri = Uri.parse(vidAddress);
+
+        //load video => TODO as a second task / async
         vidView.setVideoURI(vidUri);
+
+        //add mediacontroller
         MediaController vidControl = new MediaController(getActivity());
         vidControl.setAnchorView(vidView);
         vidView.setMediaController(vidControl);
-        //vidView.start();
 
-        return inflater.inflate(R.layout.fragment_mariusu, container, false);
+        //"autostart"
+        vidView.start();
+
+
+        //console output
+        vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                Log.e("ptp", "MPrepared: " + String.valueOf(mp.getDuration()));
+
+            }
+        });
+        vidView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.e("ptp", "Error: " + String.valueOf(what) + "  " + String.valueOf(extra));
+                return false;
+            }
+        });
+        Log.e("ptp", "play!");
+
+        return view;//inflater.inflate(R.layout.fragment_mariusu, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
