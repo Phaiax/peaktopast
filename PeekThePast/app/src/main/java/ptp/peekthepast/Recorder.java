@@ -115,64 +115,51 @@ public class Recorder extends Fragment {
                 }
         );
 
-        mCamera = getCameraInstance();
-
-        // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(getActivity(), mCamera);
-        FrameLayout preview = (FrameLayout) view.findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
-
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // Refresh the state of the +1 button each time the activity receives focus.
+    private void activatePreview() {
+        if(mCamera == null) {
+            Log.e("ptp", "Create Camera instance");
+            mCamera = getCameraInstance(getActivity());
+        }
+        if(mCamera != null) {
+            // Create our Preview view and set it as the content of our activity.
+            mPreview = new CameraPreview(getActivity(), mCamera);
+            FrameLayout preview = (FrameLayout) getView().findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+        } else {
+            Log.e("ptp", "activatePreview: no Camera");
+        }
 
     }
-
-    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
-
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-
-            File pictureFile = TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                Log.d("ptp", "Error creating media file, check storage permissions: ");
-                return;
-            }
-
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                Log.d("ptp", "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d("ptp", "Error accessing file: " + e.getMessage());
-            }
-        }
-    };
 
 
     private void record() {
-        if(prepareRecording()) {
+        if(!isRecording && prepareRecording()) {
+            Log.e("ptp", "start recording");
             mMediaRecorder.start();
             isRecording = true;
+        } else {
+            Log.e("ptp", "Error @ record");
         }
     }
 
+
     private void stopRecording() {
         if(isRecording) {
+            Log.e("ptp", "stop recording");
             mMediaRecorder.stop();
             mCamera.lock();
             mCamera.stopPreview();
             releaseMediaRecorder();
+            releaseCamera();
             isRecording = false;
+        } else {
+            Log.e("ptp", "Error @ Stop Record");
         }
+        activatePreview();
     }
 
     private void releaseMediaRecorder(){
@@ -186,28 +173,46 @@ public class Recorder extends Fragment {
 
     private void releaseCamera(){
         if (mCamera != null){
+            mPreview.releaseCamera();
+            mPreview = null;
+            FrameLayout preview = (FrameLayout) getView().findViewById(R.id.camera_preview);
+            preview.removeAllViews();
             mCamera.release();        // release the camera for other applications
             mCamera = null;
         }
     }
 
-
     private boolean prepareRecording() {
         mMediaRecorder = new MediaRecorder();
+        mMediaRecorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
+            @Override
+            public void onError(MediaRecorder mr, int what, int extra) {
+                Log.e("ptp", "MRE: " + String.valueOf(what) + " " + String.valueOf(extra));
+            }
+        });
+
+        mMediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+            @Override
+            public void onInfo(MediaRecorder mr, int what, int extra) {
+                Log.e("ptp", "MRINFO: " + String.valueOf(what) + " " + String.valueOf(extra));
+            }
+        });
 
         // Step 1: Unlock and set camera to MediaRecorder
         mCamera.unlock();
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
 
         // Step 4: Set output file
-        mMediaRecorder.setOutputFile(TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_VIDEO).toString());
+        String filename = TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_VIDEO).toString();
+        Log.e("ptp", "Filename: " + filename);
+        mMediaRecorder.setOutputFile(filename);
 
         // Step 5: Set the preview output
         mMediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
@@ -228,6 +233,7 @@ public class Recorder extends Fragment {
 
     }
 
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -245,9 +251,23 @@ public class Recorder extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        activatePreview();
+    }
+
+    @Override
+    public void onPause() {
+        stopRecording();
+        releaseCamera();
+        super.onPause();
+    }
+
+
 
     /** Check if this device has a camera */
-    private boolean checkCameraHardware(Context context) {
+    private static boolean checkCameraHardware(Context context) {
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
             // this device has a camera
             return true;
@@ -258,15 +278,17 @@ public class Recorder extends Fragment {
     }
 
     /** A safe way to get an instance of the Camera object. */
-    public static Camera getCameraInstance(){
+    private static Camera getCameraInstance(Context context){
         Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
+        if (checkCameraHardware(context)) {
+            try {
+                c = Camera.open(); // attempt to get a Camera instance
+            } catch (Exception e) {
+                // Camera is not available (in use or does not exist)
+            }
         }
         return c; // returns null if camera is unavailable
+
     }
 
     /**
