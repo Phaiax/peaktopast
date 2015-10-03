@@ -18,5 +18,6 @@
         <item>rating</item>
         <item>name</item>
     </string-array>
+    <string name="title_activity_explore_world">Explore</string>
 
 </resources>
