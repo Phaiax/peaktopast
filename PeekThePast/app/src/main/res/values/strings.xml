@@ -11,4 +11,12 @@
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="AppNameLong">Peek the Past</string>
+
+
+    <string-array name="sorting_arrays">
+        <item>date</item>
+        <item>rating</item>
+        <item>name</item>
+    </string-array>
+
 </resources>
