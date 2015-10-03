@@ -1,6 +1,8 @@
 package ptp.peekthepast;
 
-import java.util.Collection;
+
+import java.util.ArrayList;
+
 
 /**
  * Created by Marius on 03.10.2015.
@@ -22,12 +24,14 @@ public class HttpRequest {
         this.lng = lng;
         this.range = range;
         new AsyncHttp(pointer).execute(this);
+
+
     }
 
 
 
     interface HttpRequestListener {
-        void momentsAvailable(Collection<oneMoment> Moments);
+        void momentsAvailable(ArrayList<oneMoment> Moments);
         void failure(int nummer);
     }
 }

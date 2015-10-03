@@ -12,7 +12,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Marius on 03.10.2015.
@@ -60,7 +62,7 @@ public class AsyncHttp extends AsyncTask<HttpRequest, String, String> {
 
             if(result!="") {
                 jsonparser parser = new jsonparser();
-                Collection momentlist = parser.parse(result);
+                ArrayList<oneMoment> momentlist = parser.parse(result);
 
                 pointer.momentsAvailable(momentlist);
             }
