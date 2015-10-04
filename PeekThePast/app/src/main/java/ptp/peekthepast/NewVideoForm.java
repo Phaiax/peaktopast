@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -70,6 +71,7 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
         view.findViewById(R.id.button_upload).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                displayUploadMessage();
                 mListener.onVideodataEntered(String.valueOf(getTitleTextView().getText()),
                         lat, lng);
                 Log.e("ptp", "Create now");
@@ -89,6 +91,12 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
         return view;
     }
 
+
+    private void displayUploadMessage() {
+        getSubmitbutton().setEnabled(false);
+        getProgressbar().setVisibility(View.VISIBLE);
+        getSubmitbutton().setText("Uploading ...");
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -132,6 +140,9 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
 
     private Button getSubmitbutton() {
         return (Button) getView().findViewById(R.id.button_upload);
+    }
+    private ProgressBar getProgressbar() {
+        return (ProgressBar) getView().findViewById(R.id.upload_progressbar);
     }
 
     public void checkCanUpload() {

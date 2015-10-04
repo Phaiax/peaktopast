@@ -9,7 +9,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="left|top">
+        android:layout_gravity="left|top"
+        android:weightSum="1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -47,6 +48,17 @@
             android:layout_gravity="right"
             android:enabled="false"
             android:clickable="true" />
+
+        <ProgressBar
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/upload_progressbar"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.12"
+            android:visibility="invisible"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="70" />
 
     </LinearLayout>
 
