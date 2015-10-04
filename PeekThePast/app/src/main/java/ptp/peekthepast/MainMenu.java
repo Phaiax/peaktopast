@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import java.util.ArrayList;
+
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , Recorder.OnRecordingFinishedListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener, NewVideoForm.OnVideodataEnteredListener {
@@ -27,6 +29,7 @@ public class MainMenu extends AppCompatActivity
     public static String PACKAGE_NAME;
 
     public String lastVideoFile;
+    private String thumbnailFile;
 
 
     @Override
@@ -102,10 +105,20 @@ public class MainMenu extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public ContentClassForListAdapterAndVideoList getCCbyMomentid(int momentid) {
+        for (int i = 0 ; i < myList.size(); i++) {
+            if(myList.get(i).id_of_video == momentid)
+                return myList.get(i);
+        }
+        return null;
+    }
+
     public void openAmoment(int momentid)
     {
+        ContentClassForListAdapterAndVideoList moment = getCCbyMomentid(momentid);
+
         if (findViewById(R.id.fragment_container) != null) {
-            Mariusu myFragment = Mariusu.newInstance(this , "", "");
+            Mariusu myFragment = Mariusu.newInstance(this , moment.url_to_video.toString(), "");
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, myFragment)
@@ -140,6 +153,11 @@ public class MainMenu extends AppCompatActivity
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    public ArrayList<ContentClassForListAdapterAndVideoList> myList;
+
+    public void setMyList(ArrayList<ContentClassForListAdapterAndVideoList> _myList) {
+        myList = _myList;
+    }
 
     public void openVideoList()
     {
@@ -208,8 +226,7 @@ public class MainMenu extends AppCompatActivity
 
 
         } else if (id == R.id.nav_share) {
-            // kann wieder weg, nur zum schnellen Zugriff
-            UploadVideo U = new UploadVideo("wef", "#Title", 211.4f, 8.4f);
+
         } else if (id == R.id.nav_settings) {
 
         }
@@ -252,10 +269,12 @@ public class MainMenu extends AppCompatActivity
     }
 
     @Override
-    public void onRecordingFinished(String videoFile) {
+    public void onRecordingFinished(String videoFile, String thumbnailFile) {
         this.lastVideoFile = videoFile;
+        this.thumbnailFile = thumbnailFile;
 
-        NewVideoForm myFragment = NewVideoForm.newInstance(lastVideoFile);
+
+        NewVideoForm myFragment = NewVideoForm.newInstance(lastVideoFile, thumbnailFile);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, myFragment)
@@ -266,6 +285,6 @@ public class MainMenu extends AppCompatActivity
 
     @Override
     public void onVideodataEntered(String title, float lat, float lng) {
-        UploadVideo U = new UploadVideo(lastVideoFile, title, lat, lng);
+        UploadVideo U = new UploadVideo(lastVideoFile, thumbnailFile, title, lat, lng, this);
     }
 }

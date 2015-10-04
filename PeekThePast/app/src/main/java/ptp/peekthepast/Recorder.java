@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -21,6 +24,8 @@ import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,6 +53,7 @@ public class Recorder extends Fragment {
     private String mParam2;
     private Camera mCamera;
     private String filename;
+    private String thumbfilename;
 
     private CameraPreview mPreview;
     private MediaRecorder mMediaRecorder;
@@ -101,7 +107,7 @@ public class Recorder extends Fragment {
                     @Override
                     public void onClick(View v) {
                         // get an image from the camera
-                        if(!isRecording) {
+                        if (!isRecording) {
                             record();
                             ((Chronometer) view.findViewById(R.id.chronometerz)).setBase(SystemClock.elapsedRealtime());
                             ((Chronometer) view.findViewById(R.id.chronometerz)).start();
@@ -149,6 +155,7 @@ public class Recorder extends Fragment {
         if(!isRecording && prepareRecording()) {
             Log.e("ptp", "start recording");
             mMediaRecorder.start();
+            startThumbnailtimer();
             isRecording = true;
         } else {
             Log.e("ptp", "Error @ record");
@@ -165,7 +172,7 @@ public class Recorder extends Fragment {
             releaseMediaRecorder();
             releaseCamera();
             isRecording = false;
-            mListener.onRecordingFinished(filename);
+            mListener.onRecordingFinished(filename, thumbfilename);
             return;
         } else {
             Log.e("ptp", "Error @ Stop Record");
@@ -192,6 +199,60 @@ public class Recorder extends Fragment {
             mCamera.release();        // release the camera for other applications
             mCamera = null;
         }
+    }
+
+    private void startThumbnailtimer(){
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+               takeThumbnail();
+            }
+        }, 4000);
+    }
+
+    private void takeThumbnail() {
+        if(!isRecording)
+            return;
+        Log.e("ptp", "Take thumbnaul");
+
+        mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(byte[] data, Camera camera) {
+
+                thumbfilename = TmpFiles.getOutputMediaFile(TmpFiles.MEDIA_TYPE_IMAGE).toString();
+                Log.e("ptp", thumbfilename);
+                File pictureFile = new File(thumbfilename);
+
+                try {
+                    FileOutputStream fos = new FileOutputStream(pictureFile);
+                    fos.write(toJPEG(camera, data).toByteArray());
+                    fos.close();
+                    Log.e("ptp", "Thumb saved");
+                } catch (Exception error) {
+                    Log.e("ptp", "File" + thumbfilename + "not saved: "
+                            + error.getMessage());
+
+                }
+
+            }
+
+            public ByteArrayOutputStream toJPEG(Camera camera, byte[] data) {
+                Camera.Parameters parameters = camera.getParameters();
+                Camera.Size size = parameters.getPreviewSize();
+                YuvImage image = new YuvImage(data, ImageFormat.NV21,
+                        size.width, size.height, null);
+                Rect rectangle = new Rect();
+                rectangle.bottom = size.height;
+                rectangle.top = 0;
+                rectangle.left = 0;
+                rectangle.right = size.width;
+                ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+                image.compressToJpeg(rectangle, 100, out2);
+                return out2;
+            }
+
+        });
     }
 
     private boolean prepareRecording() {
@@ -323,7 +384,7 @@ public class Recorder extends Fragment {
      */
     public interface OnRecordingFinishedListener {
         // TODO: Update argument type and name
-        public void onRecordingFinished(String videoFile);
+        public void onRecordingFinished(String videoFile, String thumbnailFile);
     }
 
 }

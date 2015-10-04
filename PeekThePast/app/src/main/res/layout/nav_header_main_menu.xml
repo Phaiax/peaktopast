@@ -9,7 +9,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark" android:orientation="vertical">
 
     <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-        android:text="PtP" android:id="@+id/textView"
+        android:text="PiP" android:id="@+id/textView"
         android:textSize="75dp"
         android:textColor="#ffffff"
         android:longClickable="false" />

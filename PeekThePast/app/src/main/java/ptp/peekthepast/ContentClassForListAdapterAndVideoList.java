@@ -17,7 +17,7 @@ public class ContentClassForListAdapterAndVideoList {
     public Drawable thumbnail;
     public int id_of_video;
     public Uri url_to_video;
-    public Uri url_toThumbnail;
+    public String url_toThumbnail;
     public float lng;
     public float lat;
 }
