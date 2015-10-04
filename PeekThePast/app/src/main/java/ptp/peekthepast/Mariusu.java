@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -62,11 +63,11 @@ import java.util.List;
 public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM1 = "url";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String url;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -81,11 +82,11 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
      * @return A new instance of fragment Mariusu.
      */
     // TODO: Rename and change types and number of parameters
-    public static Mariusu newInstance(Context context, String param1, String param2) {
+    public static Mariusu newInstance(Context context, String url, String param2) {
         Mariusu fragment = new Mariusu();
         fragment.setContext(context);
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM1, url);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -99,7 +100,7 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            url = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
 
         }
@@ -115,6 +116,12 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
     public void momentsAvailable(ArrayList<oneMoment> Moments) {
         int a=0;
     }
+
+    @Override
+    public void drawAbleAvailable(Drawable thumb, int thumbid) {
+
+    }
+
     public void failure(int nummer) {}
 
 
@@ -130,7 +137,8 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
         VideoView vidView = (VideoView) view.findViewById(R.id.myVideo);
 
         //set url -> from database
-        String vidAddress = "https://mediasvcwz09mqf0j8nqs.blob.core.windows.net/asset-dac53a5d-1500-80c4-4659-f1e569de97e7/video.mp4";
+        String vidAddress = url;
+        Log.e("ptp", "Play: " + vidAddress);
         Uri vidUri = Uri.parse(vidAddress);
 
 

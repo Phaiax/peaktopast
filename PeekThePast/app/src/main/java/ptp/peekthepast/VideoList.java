@@ -82,27 +82,27 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
     {
         ContentClassForListAdapterAndVideoList aStruct;
         // search fitting.
-        for(int i = 0; i < myList.size(); i++) {
-           aStruct =  myList.get(i);
+        for(int i = 0; i < myList().size(); i++) {
+           aStruct =  myList().get(i);
             if(aStruct.id_of_video == id)
             {
                 if(up)
                 {
                     aStruct.points++;
-                    myList.set(i,aStruct);
+                    myList().set(i,aStruct);
                     i=10000;
                 }
                 else
                 {
                     aStruct.points--;
-                    myList.set(i,aStruct);
+                    myList().set(i,aStruct);
                     i=10000;
                 }
             }
         }
 
         // get data from the table by the ListAdapter
-        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList());
         yourListView.setAdapter(customAdapter);
 
 
@@ -122,7 +122,6 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
     }
 
     public ListView yourListView;
-    public ArrayList<ContentClassForListAdapterAndVideoList> myList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -209,7 +208,13 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
         mListener = null;
     }
 
+    private MainMenu gMM(){
+        return (MainMenu) getActivity();
+    }
 
+    private ArrayList<ContentClassForListAdapterAndVideoList> myList() {
+        return gMM().myList;
+    }
 
     @Override
     public void momentsAvailable(ArrayList<oneMoment> Moments) {
@@ -217,7 +222,7 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
 
         // get data from the table by the ListAdapter
         ContentClassForListAdapterAndVideoList aListItem;
-        myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
+        gMM().setMyList(new ArrayList<ContentClassForListAdapterAndVideoList>());
 
         for(int i=0; i < Moments.size(); i++) {
             aListItem = new ContentClassForListAdapterAndVideoList();
@@ -267,10 +272,15 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
 
             //---/Image
 
-            myList.add(aListItem);
+            myList().add(aListItem);
         }
-        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList());
         yourListView.setAdapter(customAdapter);
+    }
+
+    @Override
+    public void drawAbleAvailable(Drawable thumb, int thumbid) {
+
     }
 
     @Override

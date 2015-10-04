@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
+import java.util.ArrayList;
+
 public class MainMenu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , Recorder.OnRecordingFinishedListener, VideoList.OnFragmentInteractionListener, Mariusu.OnFragmentInteractionListener, NewVideoForm.OnVideodataEnteredListener {
@@ -102,10 +104,20 @@ public class MainMenu extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public ContentClassForListAdapterAndVideoList getCCbyMomentid(int momentid) {
+        for (int i = 0 ; i < myList.size(); i++) {
+            if(myList.get(i).id_of_video == momentid)
+                return myList.get(i);
+        }
+        return null;
+    }
+
     public void openAmoment(int momentid)
     {
+        ContentClassForListAdapterAndVideoList moment = getCCbyMomentid(momentid);
+
         if (findViewById(R.id.fragment_container) != null) {
-            Mariusu myFragment = Mariusu.newInstance(this , "", "");
+            Mariusu myFragment = Mariusu.newInstance(this , moment.url_to_video.toString(), "");
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, myFragment)
@@ -140,6 +152,11 @@ public class MainMenu extends AppCompatActivity
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    public ArrayList<ContentClassForListAdapterAndVideoList> myList;
+
+    public void setMyList(ArrayList<ContentClassForListAdapterAndVideoList> _myList) {
+        myList = _myList;
+    }
 
     public void openVideoList()
     {
