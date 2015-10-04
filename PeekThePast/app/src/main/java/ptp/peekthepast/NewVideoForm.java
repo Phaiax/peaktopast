@@ -121,6 +121,8 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
     public void onPositionAvailable(float lat, float lng) {
         this.lat = lat;
         this.lng = lng;
+        TextView t = (TextView) getView().findViewById(R.id.text_gps_pos);
+        t.setText(String.valueOf(lat) + ", " + String.valueOf(lng));
         checkCanUpload();
     }
 
