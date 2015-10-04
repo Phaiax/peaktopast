@@ -3,6 +3,9 @@ package ptp.peekthepast;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +20,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -199,6 +209,8 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
         mListener = null;
     }
 
+
+
     @Override
     public void momentsAvailable(ArrayList<oneMoment> Moments) {
         yourListView = (ListView) getActivity().findViewById(R.id.theListView);
@@ -217,12 +229,42 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
             aListItem.lat = Moments.get(i).lat;
             aListItem.lng = Moments.get(i).lng;
 
+
+             if(Moments.get(i).added.length() >= 9) {
+                 aListItem.timeAndDate = Moments.get(i).added.substring(8, 10) + "." +
+                         Moments.get(i).added.substring(5, 7) + "." +
+                         Moments.get(i).added.substring(0, 5);
+             }
+
             //---Image -- NOCH DEBUG!
+          /*  String uri = "drawable/test_image";
             int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
             Drawable res = getResources().getDrawable(imageResource);
-            aListItem.thumbnail = res;
-            aListItem.timeAndDate = Moments.get(i).added;
-            String uri = "drawable/test_image";
+            aListItem.thumbnail = res;*/
+
+
+
+            /*
+            try {
+                URL url = new URL(Moments.get(i).thumb);
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                Drawable d = new BitmapDrawable(getResources(), bmp);
+                aListItem.thumbnail = d;
+            }catch(Exception e){}*/
+
+
+
+          /*  try {
+                InputStream is = (InputStream) new URL(Moments.get(i).thumb).getContent();
+                Drawable d = Drawable.createFromStream(is, "src name");
+                aListItem.thumbnail =  d;
+            } catch (Exception e) {
+                String uri = "drawable/test_image";
+                int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
+                Drawable res = getResources().getDrawable(imageResource);
+                aListItem.thumbnail = res;
+            }*/
+
             //---/Image
 
             myList.add(aListItem);
