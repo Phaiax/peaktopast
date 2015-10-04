@@ -4,23 +4,29 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A fragment with a Google +1 button.
@@ -86,10 +92,10 @@ public class Recorder extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recorder, container, false);
+        final View view = inflater.inflate(R.layout.fragment_recorder, container, false);
 
         // Add a listener to the Capture button
-        Button captureButton = (Button) view.findViewById(R.id.button_record);
+        final Button captureButton = (Button) view.findViewById(R.id.button_record);
         captureButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -97,21 +103,21 @@ public class Recorder extends Fragment {
                         // get an image from the camera
                         if(!isRecording) {
                             record();
+                            ((Chronometer) view.findViewById(R.id.chronometerz)).setBase(SystemClock.elapsedRealtime());
+                            ((Chronometer) view.findViewById(R.id.chronometerz)).start();
+                            String uri = "drawable/abc_btn_radio_to_on_mtrl_000";
+                            int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
+                            Drawable res = getResources().getDrawable(imageResource);
+                            captureButton.setBackground(res);
                         } else {
                             stopRecording();
+                            ((Chronometer) view.findViewById(R.id.chronometerz)).stop();
+
+                            String uri = "drawable/abc_btn_radio_to_on_mtrl_015";
+                            int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
+                            Drawable res = getResources().getDrawable(imageResource);
+                            captureButton.setBackground(res);
                         }
-                    }
-                }
-        );
-
-        Button stopButton = (Button) view.findViewById(R.id.button_stop);
-
-        stopButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // get an image from the camera
-                        // mCamera.takePicture(null, null, mPicture);
                     }
                 }
         );
@@ -119,6 +125,7 @@ public class Recorder extends Fragment {
 
         return view;
     }
+
 
     private void activatePreview() {
         if(mCamera == null) {

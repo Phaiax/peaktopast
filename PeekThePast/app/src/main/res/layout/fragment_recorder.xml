@@ -3,24 +3,36 @@
     android:layout_height="match_parent" tools:context=".Recorder">
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Record"
-        android:id="@+id/button_record"
-        android:layout_gravity="center_horizontal|top" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop"
-        android:id="@+id/button_stop"
-        android:layout_gravity="right|top" />
-
     <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1" >
+
+    </FrameLayout>
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:id="@+id/button_record"
+        android:layout_gravity="center_horizontal|bottom"
+        android:background="@drawable/abc_btn_radio_to_on_mtrl_015"
+        android:backgroundTint="#dc0000"
+        android:backgroundTintMode="src_atop"
+        android:clickable="true"
+        android:drawableTint="#eb0909"
+        android:drawableTintMode="multiply"
+        android:foregroundTint="#ed0f0f"
+        android:foregroundTintMode="multiply" />
+
+    <Chronometer
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chronometerz"
+        android:layout_gravity="right|bottom"
+        android:textSize="35dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="15dp"
+        android:textColor="#ededed" />
 
 </FrameLayout>

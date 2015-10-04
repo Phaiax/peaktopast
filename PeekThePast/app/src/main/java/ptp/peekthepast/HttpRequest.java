@@ -1,6 +1,8 @@
 package ptp.peekthepast;
 
 
+import android.graphics.drawable.Drawable;
+
 import java.util.ArrayList;
 
 
@@ -13,6 +15,9 @@ public class HttpRequest {
     public float lat;
     public float lng;
     public float range;
+    public String thumburl;
+    public int thumbid;
+    public int whatreq;
 
 
     HttpRequest(HttpRequestListener pointer){
@@ -23,15 +28,23 @@ public class HttpRequest {
         this.lat = lat;
         this.lng = lng;
         this.range = range;
+        whatreq=1;
         new AsyncHttp(pointer).execute(this);
-
-
     }
+    void getImage(String thumburl, int thumbid){
+
+        this.thumburl = thumburl;
+        this.thumbid = thumbid;
+        whatreq=2;
+        new AsyncHttp(pointer).execute(this);
+    }
+
 
 
 
     interface HttpRequestListener {
         void momentsAvailable(ArrayList<oneMoment> Moments);
+        void drawAbleAvailable(Drawable thumb, int thumbid);
         void failure(int nummer);
     }
 }
