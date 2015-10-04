@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -115,6 +116,12 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
     public void momentsAvailable(ArrayList<oneMoment> Moments) {
         int a=0;
     }
+
+    @Override
+    public void drawAbleAvailable(Drawable thumb, int thumbid) {
+
+    }
+
     public void failure(int nummer) {}
 
 
