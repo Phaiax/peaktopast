@@ -28,9 +28,11 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "videoFile";
+    private static final String ARG_PARAM2 = "thumbnailFile";
 
     // TODO: Rename and change types of parameters
     private String videoFile;
+    private String thumbnailFile;
 
     private OnVideodataEnteredListener mListener;
 
@@ -42,10 +44,11 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
      * @return A new instance of fragment NewVideoForm.
      */
     // TODO: Rename and change types and number of parameters
-    public static NewVideoForm newInstance(String videoFile) {
+    public static NewVideoForm newInstance(String videoFile, String thumbnailFile) {
         NewVideoForm fragment = new NewVideoForm();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, videoFile);
+        args.putString(ARG_PARAM2, thumbnailFile);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +62,7 @@ public class NewVideoForm extends Fragment implements  GPSPosition.PositionAvail
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             videoFile = getArguments().getString(ARG_PARAM1);
+            thumbnailFile = getArguments().getString(ARG_PARAM2);
         }
     }
 

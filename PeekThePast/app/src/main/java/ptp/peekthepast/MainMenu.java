@@ -29,6 +29,7 @@ public class MainMenu extends AppCompatActivity
     public static String PACKAGE_NAME;
 
     public String lastVideoFile;
+    private String thumbnailFile;
 
 
     @Override
@@ -268,10 +269,12 @@ public class MainMenu extends AppCompatActivity
     }
 
     @Override
-    public void onRecordingFinished(String videoFile) {
+    public void onRecordingFinished(String videoFile, String thumbnailFile) {
         this.lastVideoFile = videoFile;
+        this.thumbnailFile = thumbnailFile;
 
-        NewVideoForm myFragment = NewVideoForm.newInstance(lastVideoFile);
+
+        NewVideoForm myFragment = NewVideoForm.newInstance(lastVideoFile, thumbnailFile);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, myFragment)
@@ -282,6 +285,6 @@ public class MainMenu extends AppCompatActivity
 
     @Override
     public void onVideodataEntered(String title, float lat, float lng) {
-        UploadVideo U = new UploadVideo(lastVideoFile, title, lat, lng, this);
+        UploadVideo U = new UploadVideo(lastVideoFile, thumbnailFile, title, lat, lng, this);
     }
 }
