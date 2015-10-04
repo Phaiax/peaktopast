@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="... GPS is drinking some wine ..."
-            android:id="@+id/textView5"
+            android:id="@+id/text_gps_pos"
             android:layout_gravity="center_horizontal" />
 
         <Button
