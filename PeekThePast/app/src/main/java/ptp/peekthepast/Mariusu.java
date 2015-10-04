@@ -4,7 +4,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -162,51 +164,59 @@ public class Mariusu extends Fragment implements HttpRequest.HttpRequestListener
 
 
 
+        boolean useVLC=true;
+
+        if(useVLC) {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setPackage("org.videolan.vlc.betav7neon");
+            i.setDataAndType(Uri.parse(url), "video/mp4");
+            startActivity(i);
+
+        } else {
+
+            //load video => TODO as a second task / async
+            vidView.setVideoURI(vidUri);
+
+            //add mediacontroller --> die kontrolleinheit unten
+            MediaController vidControl = new MediaController(getActivity());
+            vidControl.setAnchorView(vidView);
+            vidView.setMediaController(vidControl);
+
+            //"autostart"
+            vidView.start();
+            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
 
-        //load video => TODO as a second task / async
-        vidView.setVideoURI(vidUri);
+            //console output
+            vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    Log.e("ptp", "MPrepared: " + String.valueOf(mp.getDuration()));
 
-        //add mediacontroller --> die kontrolleinheit unten
-        MediaController vidControl = new MediaController(getActivity());
-        vidControl.setAnchorView(vidView);
-        vidView.setMediaController(vidControl);
-
-        //"autostart"
-        vidView.start();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-
-
-        //console output
-        vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.e("ptp", "MPrepared: " + String.valueOf(mp.getDuration()));
-
-            }
-        });
-        vidView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                Log.e("ptp", "Error: " + String.valueOf(what) + "  " + String.valueOf(extra));
-                return false;
-            }
-        });
-        vidView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            public void onCompletion(MediaPlayer mp) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-                VideoList frag = VideoList.newInstance("", "");
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_container, frag);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.addToBackStack(null);
-                ft.commit();
+                }
+            });
+            vidView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Log.e("ptp", "Error: " + String.valueOf(what) + "  " + String.valueOf(extra));
+                    return false;
+                }
+            });
+            vidView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer mp) {
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                    VideoList frag = VideoList.newInstance("", "");
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragment_container, frag);
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    ft.addToBackStack(null);
+                    ft.commit();
 
 
-            }
-        });
-        Log.e("ptp", "play!");
-
+                }
+            });
+            Log.e("ptp", "play!");
+        }
         return view;//inflater.inflate(R.layout.fragment_mariusu, container, false);
     }
 

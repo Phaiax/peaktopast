@@ -1,8 +1,12 @@
 package ptp.peekthepast;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.loopj.android.http.*;
 
 import com.google.gson.Gson;
@@ -34,15 +38,17 @@ public class UploadVideo {
     private String title;
     private float lat;
     private float lng;
+    private Context context;
 
     private long id;
     private String url;
 
-    public UploadVideo(String videoFile, String title, float lat, float lng) {
+    public UploadVideo(String videoFile, String title, float lat, float lng, Context context) {
         this.videoFile = videoFile;
         this.title = title;
         this.lat = lat;
         this.lng = lng;
+        this.context = context;
         Log.e("ptp", "Req");
 
 
@@ -65,6 +71,7 @@ public class UploadVideo {
             uploadvideoinstance.deleteVideoFileFromSd();
             publishProgress(90);
 
+
             return 1;
         }
 
@@ -74,6 +81,16 @@ public class UploadVideo {
         }
 
         protected void onPostExecute(Integer result) {
+
+            Context context2 = context.getApplicationContext();
+            CharSequence text = "Upload finished!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context2, text, duration);
+            toast.show();
+
+            context.startActivity(new Intent(context, ExploreWorld.class));
+
             Log.e("ptp", "Background Task finished");
         }
     }
