@@ -10,44 +10,58 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="left|top"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:background="#0f5100">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.15"></LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="The #titel of your moment:"
-            android:id="@+id/textView3" />
+            android:text="Title your PiP-moment:"
+            android:id="@+id/textView3"
+            android:textSize="30dp"
+            android:layout_marginLeft="10dp" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_moment_title"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="The moment will only be visible near this position:"
-            android:id="@+id/textView4" />
+            android:text="The PiP-Moment will only be visible right here!"
+            android:id="@+id/textView4"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="... GPS is drinking some wine ..."
             android:id="@+id/text_gps_pos"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:textSize="10dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Erstellen"
+            android:text="Create the Moment"
             android:id="@+id/button_upload"
             android:layout_gravity="right"
             android:enabled="false"
-            android:clickable="true" />
+            android:clickable="true"
+            android:layout_marginRight="10dp"
+            android:allowUndo="false" />
 
         <ProgressBar
             android:layout_width="85dp"

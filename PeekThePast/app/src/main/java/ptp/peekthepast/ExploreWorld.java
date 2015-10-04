@@ -51,7 +51,7 @@ public class ExploreWorld extends FragmentActivity implements OnMapReadyCallback
         int padding =3;
         mImageView.setPadding(padding, padding, padding, padding);
         mIconGenerator.setContentView(mImageView);
-        mMap.setMyLocationEnabled(true); // Simon 311
+
     }
 
     @Override
@@ -156,20 +156,59 @@ public class ExploreWorld extends FragmentActivity implements OnMapReadyCallback
     private void addItems() {
 
         // Set some lat/lng coordinates to start with.
-        double lat = 51.5145160;
-        double lng = -0.1270060;
+        double lat = 47.389929;
+        double lng = 8.515212;
+        Gmapsitem offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
 
-        // Add ten cluster items in close proximity, for purposes of this example.
-        for (int i = 0; i < 100; i++) {
-            double offset = i / 1500d;
-            lat = lat + offset;
-            lng = lng + offset;
-            Gmapsitem offsetItem = new Gmapsitem(lat, lng);
-            mClusterManager.addItem(offsetItem);
 
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 47.389959;
+        lng = 8.510211;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 47.389919;
+        lng = 8.513209;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 47.389039;
+        lng = 8.513250;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 47.389922;
+        lng = 8.515233;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 47.389245;
+        lng = 8.515233;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 47.389467;
+        lng = 8.515714;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 45.832634;
+        lng = 6.865187;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        lat = 45.832234;
+        lng = 6.865187;
+        offsetItem = new Gmapsitem(lat, lng);
+        mClusterManager.addItem(offsetItem);
+
+        mMap.setMyLocationEnabled(true); // Simon 623
 
         }
-    }
+
 
     private void updateOwnLocation()
     {

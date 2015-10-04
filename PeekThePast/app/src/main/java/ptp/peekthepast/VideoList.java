@@ -238,7 +238,7 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
              if(Moments.get(i).added.length() >= 9) {
                  aListItem.timeAndDate = Moments.get(i).added.substring(8, 10) + "." +
                          Moments.get(i).added.substring(5, 7) + "." +
-                         Moments.get(i).added.substring(0, 5);
+                         Moments.get(i).added.substring(0, 4);
              }
 
             //---Image -- NOCH DEBUG!
