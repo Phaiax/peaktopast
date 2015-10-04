@@ -230,7 +230,7 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
             aListItem.id_of_video = Moments.get(i).id;
             aListItem.points = Moments.get(i).ranking;
             aListItem.url_to_video = Uri.parse(Moments.get(i).url);
-            aListItem.url_toThumbnail = Uri.parse(Moments.get(i).thumb);
+            aListItem.url_toThumbnail = Moments.get(i).thumb;
             aListItem.lat = Moments.get(i).lat;
             aListItem.lng = Moments.get(i).lng;
 
@@ -275,6 +275,21 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
             myList().add(aListItem);
         }
         ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList());
+        yourListView.setAdapter(customAdapter);
+        HttpRequest req = new HttpRequest(this);
+        for(int i = 0; i < myList.size(); i++) {
+            req.getImage(myList.get(i).url_toThumbnail,myList.get(i).id_of_video);
+        }
+    }
+
+    @Override
+    public void drawAbleAvailable(Drawable thumb, int thumbid) {
+        for(int i = 0; i < myList.size(); i++) {
+            if (myList.get(i).id_of_video == thumbid) {
+                myList.get(i).thumbnail = thumb;
+            }
+        }
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
         yourListView.setAdapter(customAdapter);
     }
 
