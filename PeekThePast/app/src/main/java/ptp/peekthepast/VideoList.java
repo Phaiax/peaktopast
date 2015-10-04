@@ -276,10 +276,18 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
         }
         ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList());
         yourListView.setAdapter(customAdapter);
+
+        thumbload(0);
+
+    }
+
+    public int thumbloadwo;
+
+    public void thumbload(int wo)
+    {
+        thumbloadwo = wo;
         HttpRequest req = new HttpRequest(this);
-        for(int i = 0; i < myList().size(); i++) {
-            req.getImage(myList().get(i).url_toThumbnail,myList().get(i).id_of_video);
-        }
+        req.getImage(myList().get(wo).url_toThumbnail,myList().get(wo).id_of_video);
     }
 
     @Override
