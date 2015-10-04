@@ -1,5 +1,6 @@
 package ptp.peekthepast;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,6 +36,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class UploadVideo {
     private String videoFile;
+    private String thumbnailFile;
     private String title;
     private float lat;
     private float lng;
@@ -43,8 +45,10 @@ public class UploadVideo {
     private long id;
     private String url;
 
-    public UploadVideo(String videoFile, String title, float lat, float lng, Context context) {
+    public UploadVideo(String videoFile, String thumbnailFile,
+                       String title, float lat, float lng, Context context) {
         this.videoFile = videoFile;
+        this.thumbnailFile = thumbnailFile;
         this.title = title;
         this.lat = lat;
         this.lng = lng;
@@ -89,7 +93,11 @@ public class UploadVideo {
             Toast toast = Toast.makeText(context2, text, duration);
             toast.show();
 
-            context.startActivity(new Intent(context, ExploreWorld.class));
+            VideoList myFragment = VideoList.newInstance("", "");
+            ((Activity) context).getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, myFragment)
+                    .commit();
+
 
             Log.e("ptp", "Background Task finished");
         }
@@ -119,6 +127,12 @@ public class UploadVideo {
         params.put("lng", String.valueOf(lng));
         params.put("lat", String.valueOf(lat));
         params.put("name", enc(maxlen(title, 140)));
+        File myFile = new File(thumbnailFile);
+        try {
+            params.put("thumb", myFile);
+        } catch(FileNotFoundException e) {
+            return;
+        }
 
         SyncHttpClient client = new SyncHttpClient();
         client.post("http://ptpbackend.cloudapp.net/newvideo", params, new AsyncHttpResponseHandler() {
