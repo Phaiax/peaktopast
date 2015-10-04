@@ -297,6 +297,9 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
                 myList().get(i).thumbnail = thumb;
             }
         }
+        if((thumbloadwo+1)<myList().size()) {
+            thumbload(thumbloadwo + 1);
+        }
         ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList());
         yourListView.setAdapter(customAdapter);
     }
