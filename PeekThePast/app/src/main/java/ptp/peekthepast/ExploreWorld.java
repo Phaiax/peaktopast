@@ -137,7 +137,8 @@ public class ExploreWorld extends FragmentActivity implements OnMapReadyCallback
 
 
         // Position the map.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(47.401727f, 8.508642f), 10));
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
@@ -166,6 +167,7 @@ public class ExploreWorld extends FragmentActivity implements OnMapReadyCallback
             lng = lng + offset;
             Gmapsitem offsetItem = new Gmapsitem(lat, lng);
             mClusterManager.addItem(offsetItem);
+
 
 
         }
