@@ -29,7 +29,7 @@ public class GPSPosition {
             public void run() {
                 handler.sendMessage(new Message());
             }
-        }, 3);
+        }, 3000);
     }
 
     public static Handler handler = new Handler() {
