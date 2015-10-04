@@ -51,6 +51,7 @@ public class ExploreWorld extends FragmentActivity implements OnMapReadyCallback
         int padding =3;
         mImageView.setPadding(padding, padding, padding, padding);
         mIconGenerator.setContentView(mImageView);
+        mMap.setMyLocationEnabled(true); // Simon 311
     }
 
     @Override
@@ -165,6 +166,14 @@ public class ExploreWorld extends FragmentActivity implements OnMapReadyCallback
             lng = lng + offset;
             Gmapsitem offsetItem = new Gmapsitem(lat, lng);
             mClusterManager.addItem(offsetItem);
+
+
         }
     }
+
+    private void updateOwnLocation()
+    {
+
+    }
+
 }

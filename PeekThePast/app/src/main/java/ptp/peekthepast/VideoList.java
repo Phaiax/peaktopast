@@ -3,6 +3,9 @@ package ptp.peekthepast;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +20,15 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -32,7 +43,7 @@ import java.util.List;
  */
 
 
-public class VideoList extends Fragment {
+public class VideoList extends Fragment implements HttpRequest.HttpRequestListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -147,24 +158,16 @@ public class VideoList extends Fragment {
       //
       // yourListView .setAdapter(customAdapter);
 
-        yourListView = (ListView) view.findViewById(R.id.theListView);
 
-// get data from the table by the ListAdapter
-        ContentClassForListAdapterAndVideoList aListItem = new ContentClassForListAdapterAndVideoList();
-        aListItem.description= "wfewefweff";
-        aListItem.id_of_video= 123;
-        aListItem.points = 214;
-        String uri = "drawable/test_image";
-        int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
-        Drawable res = getResources().getDrawable(imageResource);
-        aListItem.thumbnail = res;
-        aListItem.timeAndDate = "1.1.1992 14:33";
-        myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
-        for(int i =0 ; i < 20; i++) {
-            myList.add(aListItem);
-        }
-        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
-        yourListView.setAdapter(customAdapter);
+        HttpRequest req = new HttpRequest(this);
+        req.getMoments(1,2,3); // TODO Zahlen iwann umändern wenn implementiert
+
+
+        //------------------------------Bestücken
+
+
+
+        //-------------End Bestücken
 
 
         //-----------------
@@ -206,6 +209,74 @@ public class VideoList extends Fragment {
         mListener = null;
     }
 
+
+
+    @Override
+    public void momentsAvailable(ArrayList<oneMoment> Moments) {
+        yourListView = (ListView) getActivity().findViewById(R.id.theListView);
+
+        // get data from the table by the ListAdapter
+        ContentClassForListAdapterAndVideoList aListItem;
+        myList = new ArrayList<ContentClassForListAdapterAndVideoList>();
+
+        for(int i=0; i < Moments.size(); i++) {
+            aListItem = new ContentClassForListAdapterAndVideoList();
+            aListItem.description = Moments.get(i).name;
+            aListItem.id_of_video = Moments.get(i).id;
+            aListItem.points = Moments.get(i).ranking;
+            aListItem.url_to_video = Uri.parse(Moments.get(i).url);
+            aListItem.url_toThumbnail = Uri.parse(Moments.get(i).thumb);
+            aListItem.lat = Moments.get(i).lat;
+            aListItem.lng = Moments.get(i).lng;
+
+
+             if(Moments.get(i).added.length() >= 9) {
+                 aListItem.timeAndDate = Moments.get(i).added.substring(8, 10) + "." +
+                         Moments.get(i).added.substring(5, 7) + "." +
+                         Moments.get(i).added.substring(0, 5);
+             }
+
+            //---Image -- NOCH DEBUG!
+          /*  String uri = "drawable/test_image";
+            int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
+            Drawable res = getResources().getDrawable(imageResource);
+            aListItem.thumbnail = res;*/
+
+
+
+            /*
+            try {
+                URL url = new URL(Moments.get(i).thumb);
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                Drawable d = new BitmapDrawable(getResources(), bmp);
+                aListItem.thumbnail = d;
+            }catch(Exception e){}*/
+
+
+
+          /*  try {
+                InputStream is = (InputStream) new URL(Moments.get(i).thumb).getContent();
+                Drawable d = Drawable.createFromStream(is, "src name");
+                aListItem.thumbnail =  d;
+            } catch (Exception e) {
+                String uri = "drawable/test_image";
+                int imageResource = getResources().getIdentifier(uri, null, MainMenu.PACKAGE_NAME);
+                Drawable res = getResources().getDrawable(imageResource);
+                aListItem.thumbnail = res;
+            }*/
+
+            //---/Image
+
+            myList.add(aListItem);
+        }
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
+        yourListView.setAdapter(customAdapter);
+    }
+
+    @Override
+    public void failure(int nummer) {
+
+    }
 
 
     /**
