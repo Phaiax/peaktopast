@@ -287,27 +287,23 @@ public class VideoList extends Fragment implements HttpRequest.HttpRequestListen
     {
         thumbloadwo = wo;
         HttpRequest req = new HttpRequest(this);
-        req.getImage(myList.get(wo).url_toThumbnail,myList.get(wo).id_of_video);
+        req.getImage(myList().get(wo).url_toThumbnail,myList().get(wo).id_of_video);
     }
 
     @Override
     public void drawAbleAvailable(Drawable thumb, int thumbid) {
-        for(int i = 0; i < myList.size(); i++) {
-            if (myList.get(i).id_of_video == thumbid) {
-                myList.get(i).thumbnail = thumb;
+        for(int i = 0; i < myList().size(); i++) {
+            if (myList().get(i).id_of_video == thumbid) {
+                myList().get(i).thumbnail = thumb;
             }
         }
-        if((thumbloadwo+1)<myList.size()) {
+        if((thumbloadwo+1)<myList().size()) {
             thumbload(thumbloadwo + 1);
         }
-        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList);
+        ListAdapter customAdapter = new ListAdapterForVideoList(getActivity(), R.layout.view_element_prototype, myList());
         yourListView.setAdapter(customAdapter);
     }
 
-    @Override
-    public void drawAbleAvailable(Drawable thumb, int thumbid) {
-
-    }
 
     @Override
     public void failure(int nummer) {
